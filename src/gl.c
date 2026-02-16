@@ -30,6 +30,7 @@ int GLAD_GL_VERSION_1_3 = 0;
 int GLAD_GL_VERSION_1_4 = 0;
 int GLAD_GL_VERSION_1_5 = 0;
 int GLAD_GL_VERSION_2_0 = 0;
+int GLAD_GL_VERSION_2_1 = 0;
 
 
 
@@ -494,8 +495,14 @@ PFNGLUNIFORM4FVPROC glad_glUniform4fv = NULL;
 PFNGLUNIFORM4IPROC glad_glUniform4i = NULL;
 PFNGLUNIFORM4IVPROC glad_glUniform4iv = NULL;
 PFNGLUNIFORMMATRIX2FVPROC glad_glUniformMatrix2fv = NULL;
+PFNGLUNIFORMMATRIX2X3FVPROC glad_glUniformMatrix2x3fv = NULL;
+PFNGLUNIFORMMATRIX2X4FVPROC glad_glUniformMatrix2x4fv = NULL;
 PFNGLUNIFORMMATRIX3FVPROC glad_glUniformMatrix3fv = NULL;
+PFNGLUNIFORMMATRIX3X2FVPROC glad_glUniformMatrix3x2fv = NULL;
+PFNGLUNIFORMMATRIX3X4FVPROC glad_glUniformMatrix3x4fv = NULL;
 PFNGLUNIFORMMATRIX4FVPROC glad_glUniformMatrix4fv = NULL;
+PFNGLUNIFORMMATRIX4X2FVPROC glad_glUniformMatrix4x2fv = NULL;
+PFNGLUNIFORMMATRIX4X3FVPROC glad_glUniformMatrix4x3fv = NULL;
 PFNGLUNMAPBUFFERPROC glad_glUnmapBuffer = NULL;
 PFNGLUSEPROGRAMPROC glad_glUseProgram = NULL;
 PFNGLVALIDATEPROGRAMPROC glad_glValidateProgram = NULL;
@@ -1146,6 +1153,15 @@ static void glad_gl_load_GL_VERSION_2_0( GLADuserptrloadfunc load, void* userptr
     glad_glVertexAttrib4usv = (PFNGLVERTEXATTRIB4USVPROC) load(userptr, "glVertexAttrib4usv");
     glad_glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC) load(userptr, "glVertexAttribPointer");
 }
+static void glad_gl_load_GL_VERSION_2_1( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_GL_VERSION_2_1) return;
+    glad_glUniformMatrix2x3fv = (PFNGLUNIFORMMATRIX2X3FVPROC) load(userptr, "glUniformMatrix2x3fv");
+    glad_glUniformMatrix2x4fv = (PFNGLUNIFORMMATRIX2X4FVPROC) load(userptr, "glUniformMatrix2x4fv");
+    glad_glUniformMatrix3x2fv = (PFNGLUNIFORMMATRIX3X2FVPROC) load(userptr, "glUniformMatrix3x2fv");
+    glad_glUniformMatrix3x4fv = (PFNGLUNIFORMMATRIX3X4FVPROC) load(userptr, "glUniformMatrix3x4fv");
+    glad_glUniformMatrix4x2fv = (PFNGLUNIFORMMATRIX4X2FVPROC) load(userptr, "glUniformMatrix4x2fv");
+    glad_glUniformMatrix4x3fv = (PFNGLUNIFORMMATRIX4X3FVPROC) load(userptr, "glUniformMatrix4x3fv");
+}
 
 
 
@@ -1279,6 +1295,7 @@ static int glad_gl_find_core_gl(void) {
     GLAD_GL_VERSION_1_4 = (major == 1 && minor >= 4) || major > 1;
     GLAD_GL_VERSION_1_5 = (major == 1 && minor >= 5) || major > 1;
     GLAD_GL_VERSION_2_0 = (major == 2 && minor >= 0) || major > 2;
+    GLAD_GL_VERSION_2_1 = (major == 2 && minor >= 1) || major > 2;
 
     return GLAD_MAKE_VERSION(major, minor);
 }
@@ -1297,6 +1314,7 @@ int gladLoadGLUserPtr( GLADuserptrloadfunc load, void *userptr) {
     glad_gl_load_GL_VERSION_1_4(load, userptr);
     glad_gl_load_GL_VERSION_1_5(load, userptr);
     glad_gl_load_GL_VERSION_2_0(load, userptr);
+    glad_gl_load_GL_VERSION_2_1(load, userptr);
 
     if (!glad_gl_find_extensions_gl()) return 0;
 

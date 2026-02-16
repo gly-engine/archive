@@ -24,12 +24,19 @@ extern "C" {
 
 
 int GLAD_EGL_VERSION_1_0 = 0;
+int GLAD_EGL_VERSION_1_1 = 0;
+int GLAD_EGL_VERSION_1_2 = 0;
+int GLAD_EGL_VERSION_1_3 = 0;
+int GLAD_EGL_VERSION_1_4 = 0;
 
 
 
+PFNEGLBINDAPIPROC glad_eglBindAPI = NULL;
+PFNEGLBINDTEXIMAGEPROC glad_eglBindTexImage = NULL;
 PFNEGLCHOOSECONFIGPROC glad_eglChooseConfig = NULL;
 PFNEGLCOPYBUFFERSPROC glad_eglCopyBuffers = NULL;
 PFNEGLCREATECONTEXTPROC glad_eglCreateContext = NULL;
+PFNEGLCREATEPBUFFERFROMCLIENTBUFFERPROC glad_eglCreatePbufferFromClientBuffer = NULL;
 PFNEGLCREATEPBUFFERSURFACEPROC glad_eglCreatePbufferSurface = NULL;
 PFNEGLCREATEPIXMAPSURFACEPROC glad_eglCreatePixmapSurface = NULL;
 PFNEGLCREATEWINDOWSURFACEPROC glad_eglCreateWindowSurface = NULL;
@@ -37,6 +44,7 @@ PFNEGLDESTROYCONTEXTPROC glad_eglDestroyContext = NULL;
 PFNEGLDESTROYSURFACEPROC glad_eglDestroySurface = NULL;
 PFNEGLGETCONFIGATTRIBPROC glad_eglGetConfigAttrib = NULL;
 PFNEGLGETCONFIGSPROC glad_eglGetConfigs = NULL;
+PFNEGLGETCURRENTCONTEXTPROC glad_eglGetCurrentContext = NULL;
 PFNEGLGETCURRENTDISPLAYPROC glad_eglGetCurrentDisplay = NULL;
 PFNEGLGETCURRENTSURFACEPROC glad_eglGetCurrentSurface = NULL;
 PFNEGLGETDISPLAYPROC glad_eglGetDisplay = NULL;
@@ -44,11 +52,17 @@ PFNEGLGETERRORPROC glad_eglGetError = NULL;
 PFNEGLGETPROCADDRESSPROC glad_eglGetProcAddress = NULL;
 PFNEGLINITIALIZEPROC glad_eglInitialize = NULL;
 PFNEGLMAKECURRENTPROC glad_eglMakeCurrent = NULL;
+PFNEGLQUERYAPIPROC glad_eglQueryAPI = NULL;
 PFNEGLQUERYCONTEXTPROC glad_eglQueryContext = NULL;
 PFNEGLQUERYSTRINGPROC glad_eglQueryString = NULL;
 PFNEGLQUERYSURFACEPROC glad_eglQuerySurface = NULL;
+PFNEGLRELEASETEXIMAGEPROC glad_eglReleaseTexImage = NULL;
+PFNEGLRELEASETHREADPROC glad_eglReleaseThread = NULL;
+PFNEGLSURFACEATTRIBPROC glad_eglSurfaceAttrib = NULL;
 PFNEGLSWAPBUFFERSPROC glad_eglSwapBuffers = NULL;
+PFNEGLSWAPINTERVALPROC glad_eglSwapInterval = NULL;
 PFNEGLTERMINATEPROC glad_eglTerminate = NULL;
+PFNEGLWAITCLIENTPROC glad_eglWaitClient = NULL;
 PFNEGLWAITGLPROC glad_eglWaitGL = NULL;
 PFNEGLWAITNATIVEPROC glad_eglWaitNative = NULL;
 
@@ -79,6 +93,25 @@ static void glad_egl_load_EGL_VERSION_1_0( GLADuserptrloadfunc load, void* userp
     glad_eglTerminate = (PFNEGLTERMINATEPROC) load(userptr, "eglTerminate");
     glad_eglWaitGL = (PFNEGLWAITGLPROC) load(userptr, "eglWaitGL");
     glad_eglWaitNative = (PFNEGLWAITNATIVEPROC) load(userptr, "eglWaitNative");
+}
+static void glad_egl_load_EGL_VERSION_1_1( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_VERSION_1_1) return;
+    glad_eglBindTexImage = (PFNEGLBINDTEXIMAGEPROC) load(userptr, "eglBindTexImage");
+    glad_eglReleaseTexImage = (PFNEGLRELEASETEXIMAGEPROC) load(userptr, "eglReleaseTexImage");
+    glad_eglSurfaceAttrib = (PFNEGLSURFACEATTRIBPROC) load(userptr, "eglSurfaceAttrib");
+    glad_eglSwapInterval = (PFNEGLSWAPINTERVALPROC) load(userptr, "eglSwapInterval");
+}
+static void glad_egl_load_EGL_VERSION_1_2( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_VERSION_1_2) return;
+    glad_eglBindAPI = (PFNEGLBINDAPIPROC) load(userptr, "eglBindAPI");
+    glad_eglCreatePbufferFromClientBuffer = (PFNEGLCREATEPBUFFERFROMCLIENTBUFFERPROC) load(userptr, "eglCreatePbufferFromClientBuffer");
+    glad_eglQueryAPI = (PFNEGLQUERYAPIPROC) load(userptr, "eglQueryAPI");
+    glad_eglReleaseThread = (PFNEGLRELEASETHREADPROC) load(userptr, "eglReleaseThread");
+    glad_eglWaitClient = (PFNEGLWAITCLIENTPROC) load(userptr, "eglWaitClient");
+}
+static void glad_egl_load_EGL_VERSION_1_4( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_EGL_VERSION_1_4) return;
+    glad_eglGetCurrentContext = (PFNEGLGETCURRENTCONTEXTPROC) load(userptr, "eglGetCurrentContext");
 }
 
 
@@ -154,6 +187,10 @@ static int glad_egl_find_core_egl(EGLDisplay display) {
     }
 
     GLAD_EGL_VERSION_1_0 = (major == 1 && minor >= 0) || major > 1;
+    GLAD_EGL_VERSION_1_1 = (major == 1 && minor >= 1) || major > 1;
+    GLAD_EGL_VERSION_1_2 = (major == 1 && minor >= 2) || major > 1;
+    GLAD_EGL_VERSION_1_3 = (major == 1 && minor >= 3) || major > 1;
+    GLAD_EGL_VERSION_1_4 = (major == 1 && minor >= 4) || major > 1;
 
     return GLAD_MAKE_VERSION(major, minor);
 }
@@ -169,6 +206,9 @@ int gladLoadEGLUserPtr(EGLDisplay display, GLADuserptrloadfunc load, void* userp
     version = glad_egl_find_core_egl(display);
     if (!version) return 0;
     glad_egl_load_EGL_VERSION_1_0(load, userptr);
+    glad_egl_load_EGL_VERSION_1_1(load, userptr);
+    glad_egl_load_EGL_VERSION_1_2(load, userptr);
+    glad_egl_load_EGL_VERSION_1_4(load, userptr);
 
     if (!glad_egl_find_extensions_egl(display)) return 0;
 
