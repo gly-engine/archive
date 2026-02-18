@@ -31,6 +31,7 @@ int GLAD_GL_VERSION_1_4 = 0;
 int GLAD_GL_VERSION_1_5 = 0;
 int GLAD_GL_VERSION_2_0 = 0;
 int GLAD_GL_VERSION_2_1 = 0;
+int GLAD_GL_ARB_framebuffer_object = 0;
 
 
 
@@ -44,6 +45,8 @@ PFNGLBEGINPROC glad_glBegin = NULL;
 PFNGLBEGINQUERYPROC glad_glBeginQuery = NULL;
 PFNGLBINDATTRIBLOCATIONPROC glad_glBindAttribLocation = NULL;
 PFNGLBINDBUFFERPROC glad_glBindBuffer = NULL;
+PFNGLBINDFRAMEBUFFERPROC glad_glBindFramebuffer = NULL;
+PFNGLBINDRENDERBUFFERPROC glad_glBindRenderbuffer = NULL;
 PFNGLBINDTEXTUREPROC glad_glBindTexture = NULL;
 PFNGLBITMAPPROC glad_glBitmap = NULL;
 PFNGLBLENDCOLORPROC glad_glBlendColor = NULL;
@@ -51,10 +54,12 @@ PFNGLBLENDEQUATIONPROC glad_glBlendEquation = NULL;
 PFNGLBLENDEQUATIONSEPARATEPROC glad_glBlendEquationSeparate = NULL;
 PFNGLBLENDFUNCPROC glad_glBlendFunc = NULL;
 PFNGLBLENDFUNCSEPARATEPROC glad_glBlendFuncSeparate = NULL;
+PFNGLBLITFRAMEBUFFERPROC glad_glBlitFramebuffer = NULL;
 PFNGLBUFFERDATAPROC glad_glBufferData = NULL;
 PFNGLBUFFERSUBDATAPROC glad_glBufferSubData = NULL;
 PFNGLCALLLISTPROC glad_glCallList = NULL;
 PFNGLCALLLISTSPROC glad_glCallLists = NULL;
+PFNGLCHECKFRAMEBUFFERSTATUSPROC glad_glCheckFramebufferStatus = NULL;
 PFNGLCLEARPROC glad_glClear = NULL;
 PFNGLCLEARACCUMPROC glad_glClearAccum = NULL;
 PFNGLCLEARCOLORPROC glad_glClearColor = NULL;
@@ -115,9 +120,11 @@ PFNGLCREATEPROGRAMPROC glad_glCreateProgram = NULL;
 PFNGLCREATESHADERPROC glad_glCreateShader = NULL;
 PFNGLCULLFACEPROC glad_glCullFace = NULL;
 PFNGLDELETEBUFFERSPROC glad_glDeleteBuffers = NULL;
+PFNGLDELETEFRAMEBUFFERSPROC glad_glDeleteFramebuffers = NULL;
 PFNGLDELETELISTSPROC glad_glDeleteLists = NULL;
 PFNGLDELETEPROGRAMPROC glad_glDeleteProgram = NULL;
 PFNGLDELETEQUERIESPROC glad_glDeleteQueries = NULL;
+PFNGLDELETERENDERBUFFERSPROC glad_glDeleteRenderbuffers = NULL;
 PFNGLDELETESHADERPROC glad_glDeleteShader = NULL;
 PFNGLDELETETEXTURESPROC glad_glDeleteTextures = NULL;
 PFNGLDEPTHFUNCPROC glad_glDepthFunc = NULL;
@@ -166,12 +173,20 @@ PFNGLFOGFPROC glad_glFogf = NULL;
 PFNGLFOGFVPROC glad_glFogfv = NULL;
 PFNGLFOGIPROC glad_glFogi = NULL;
 PFNGLFOGIVPROC glad_glFogiv = NULL;
+PFNGLFRAMEBUFFERRENDERBUFFERPROC glad_glFramebufferRenderbuffer = NULL;
+PFNGLFRAMEBUFFERTEXTURE1DPROC glad_glFramebufferTexture1D = NULL;
+PFNGLFRAMEBUFFERTEXTURE2DPROC glad_glFramebufferTexture2D = NULL;
+PFNGLFRAMEBUFFERTEXTURE3DPROC glad_glFramebufferTexture3D = NULL;
+PFNGLFRAMEBUFFERTEXTURELAYERPROC glad_glFramebufferTextureLayer = NULL;
 PFNGLFRONTFACEPROC glad_glFrontFace = NULL;
 PFNGLFRUSTUMPROC glad_glFrustum = NULL;
 PFNGLGENBUFFERSPROC glad_glGenBuffers = NULL;
+PFNGLGENFRAMEBUFFERSPROC glad_glGenFramebuffers = NULL;
 PFNGLGENLISTSPROC glad_glGenLists = NULL;
 PFNGLGENQUERIESPROC glad_glGenQueries = NULL;
+PFNGLGENRENDERBUFFERSPROC glad_glGenRenderbuffers = NULL;
 PFNGLGENTEXTURESPROC glad_glGenTextures = NULL;
+PFNGLGENERATEMIPMAPPROC glad_glGenerateMipmap = NULL;
 PFNGLGETACTIVEATTRIBPROC glad_glGetActiveAttrib = NULL;
 PFNGLGETACTIVEUNIFORMPROC glad_glGetActiveUniform = NULL;
 PFNGLGETATTACHEDSHADERSPROC glad_glGetAttachedShaders = NULL;
@@ -185,6 +200,7 @@ PFNGLGETCOMPRESSEDTEXIMAGEPROC glad_glGetCompressedTexImage = NULL;
 PFNGLGETDOUBLEVPROC glad_glGetDoublev = NULL;
 PFNGLGETERRORPROC glad_glGetError = NULL;
 PFNGLGETFLOATVPROC glad_glGetFloatv = NULL;
+PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC glad_glGetFramebufferAttachmentParameteriv = NULL;
 PFNGLGETINTEGERVPROC glad_glGetIntegerv = NULL;
 PFNGLGETLIGHTFVPROC glad_glGetLightfv = NULL;
 PFNGLGETLIGHTIVPROC glad_glGetLightiv = NULL;
@@ -203,6 +219,7 @@ PFNGLGETPROGRAMIVPROC glad_glGetProgramiv = NULL;
 PFNGLGETQUERYOBJECTIVPROC glad_glGetQueryObjectiv = NULL;
 PFNGLGETQUERYOBJECTUIVPROC glad_glGetQueryObjectuiv = NULL;
 PFNGLGETQUERYIVPROC glad_glGetQueryiv = NULL;
+PFNGLGETRENDERBUFFERPARAMETERIVPROC glad_glGetRenderbufferParameteriv = NULL;
 PFNGLGETSHADERINFOLOGPROC glad_glGetShaderInfoLog = NULL;
 PFNGLGETSHADERSOURCEPROC glad_glGetShaderSource = NULL;
 PFNGLGETSHADERIVPROC glad_glGetShaderiv = NULL;
@@ -241,9 +258,11 @@ PFNGLINITNAMESPROC glad_glInitNames = NULL;
 PFNGLINTERLEAVEDARRAYSPROC glad_glInterleavedArrays = NULL;
 PFNGLISBUFFERPROC glad_glIsBuffer = NULL;
 PFNGLISENABLEDPROC glad_glIsEnabled = NULL;
+PFNGLISFRAMEBUFFERPROC glad_glIsFramebuffer = NULL;
 PFNGLISLISTPROC glad_glIsList = NULL;
 PFNGLISPROGRAMPROC glad_glIsProgram = NULL;
 PFNGLISQUERYPROC glad_glIsQuery = NULL;
+PFNGLISRENDERBUFFERPROC glad_glIsRenderbuffer = NULL;
 PFNGLISSHADERPROC glad_glIsShader = NULL;
 PFNGLISTEXTUREPROC glad_glIsTexture = NULL;
 PFNGLLIGHTMODELFPROC glad_glLightModelf = NULL;
@@ -391,6 +410,8 @@ PFNGLRECTIVPROC glad_glRectiv = NULL;
 PFNGLRECTSPROC glad_glRects = NULL;
 PFNGLRECTSVPROC glad_glRectsv = NULL;
 PFNGLRENDERMODEPROC glad_glRenderMode = NULL;
+PFNGLRENDERBUFFERSTORAGEPROC glad_glRenderbufferStorage = NULL;
+PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glad_glRenderbufferStorageMultisample = NULL;
 PFNGLROTATEDPROC glad_glRotated = NULL;
 PFNGLROTATEFPROC glad_glRotatef = NULL;
 PFNGLSAMPLECOVERAGEPROC glad_glSampleCoverage = NULL;
@@ -1162,6 +1183,29 @@ static void glad_gl_load_GL_VERSION_2_1( GLADuserptrloadfunc load, void* userptr
     glad_glUniformMatrix4x2fv = (PFNGLUNIFORMMATRIX4X2FVPROC) load(userptr, "glUniformMatrix4x2fv");
     glad_glUniformMatrix4x3fv = (PFNGLUNIFORMMATRIX4X3FVPROC) load(userptr, "glUniformMatrix4x3fv");
 }
+static void glad_gl_load_GL_ARB_framebuffer_object( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_GL_ARB_framebuffer_object) return;
+    glad_glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC) load(userptr, "glBindFramebuffer");
+    glad_glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC) load(userptr, "glBindRenderbuffer");
+    glad_glBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC) load(userptr, "glBlitFramebuffer");
+    glad_glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSPROC) load(userptr, "glCheckFramebufferStatus");
+    glad_glDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC) load(userptr, "glDeleteFramebuffers");
+    glad_glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC) load(userptr, "glDeleteRenderbuffers");
+    glad_glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC) load(userptr, "glFramebufferRenderbuffer");
+    glad_glFramebufferTexture1D = (PFNGLFRAMEBUFFERTEXTURE1DPROC) load(userptr, "glFramebufferTexture1D");
+    glad_glFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC) load(userptr, "glFramebufferTexture2D");
+    glad_glFramebufferTexture3D = (PFNGLFRAMEBUFFERTEXTURE3DPROC) load(userptr, "glFramebufferTexture3D");
+    glad_glFramebufferTextureLayer = (PFNGLFRAMEBUFFERTEXTURELAYERPROC) load(userptr, "glFramebufferTextureLayer");
+    glad_glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC) load(userptr, "glGenFramebuffers");
+    glad_glGenRenderbuffers = (PFNGLGENRENDERBUFFERSPROC) load(userptr, "glGenRenderbuffers");
+    glad_glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC) load(userptr, "glGenerateMipmap");
+    glad_glGetFramebufferAttachmentParameteriv = (PFNGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC) load(userptr, "glGetFramebufferAttachmentParameteriv");
+    glad_glGetRenderbufferParameteriv = (PFNGLGETRENDERBUFFERPARAMETERIVPROC) load(userptr, "glGetRenderbufferParameteriv");
+    glad_glIsFramebuffer = (PFNGLISFRAMEBUFFERPROC) load(userptr, "glIsFramebuffer");
+    glad_glIsRenderbuffer = (PFNGLISRENDERBUFFERPROC) load(userptr, "glIsRenderbuffer");
+    glad_glRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEPROC) load(userptr, "glRenderbufferStorage");
+    glad_glRenderbufferStorageMultisample = (PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC) load(userptr, "glRenderbufferStorageMultisample");
+}
 
 
 
@@ -1257,7 +1301,7 @@ static int glad_gl_find_extensions_gl(void) {
     char **exts_i = NULL;
     if (!glad_gl_get_extensions(&exts, &exts_i)) return 0;
 
-    GLAD_UNUSED(&glad_gl_has_extension);
+    GLAD_GL_ARB_framebuffer_object = glad_gl_has_extension(exts, exts_i, "GL_ARB_framebuffer_object");
 
     glad_gl_free_extensions(exts_i);
 
@@ -1317,6 +1361,7 @@ int gladLoadGLUserPtr( GLADuserptrloadfunc load, void *userptr) {
     glad_gl_load_GL_VERSION_2_1(load, userptr);
 
     if (!glad_gl_find_extensions_gl()) return 0;
+    glad_gl_load_GL_ARB_framebuffer_object(load, userptr);
 
 
 
