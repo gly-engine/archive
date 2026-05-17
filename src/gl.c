@@ -31,6 +31,7 @@ int GLAD_GL_VERSION_1_4 = 0;
 int GLAD_GL_VERSION_1_5 = 0;
 int GLAD_GL_VERSION_2_0 = 0;
 int GLAD_GL_VERSION_2_1 = 0;
+int GLAD_GL_ARB_ES2_compatibility = 0;
 int GLAD_GL_ARB_framebuffer_object = 0;
 
 
@@ -64,6 +65,7 @@ PFNGLCLEARPROC glad_glClear = NULL;
 PFNGLCLEARACCUMPROC glad_glClearAccum = NULL;
 PFNGLCLEARCOLORPROC glad_glClearColor = NULL;
 PFNGLCLEARDEPTHPROC glad_glClearDepth = NULL;
+PFNGLCLEARDEPTHFPROC glad_glClearDepthf = NULL;
 PFNGLCLEARINDEXPROC glad_glClearIndex = NULL;
 PFNGLCLEARSTENCILPROC glad_glClearStencil = NULL;
 PFNGLCLIENTACTIVETEXTUREPROC glad_glClientActiveTexture = NULL;
@@ -130,6 +132,7 @@ PFNGLDELETETEXTURESPROC glad_glDeleteTextures = NULL;
 PFNGLDEPTHFUNCPROC glad_glDepthFunc = NULL;
 PFNGLDEPTHMASKPROC glad_glDepthMask = NULL;
 PFNGLDEPTHRANGEPROC glad_glDepthRange = NULL;
+PFNGLDEPTHRANGEFPROC glad_glDepthRangef = NULL;
 PFNGLDETACHSHADERPROC glad_glDetachShader = NULL;
 PFNGLDISABLEPROC glad_glDisable = NULL;
 PFNGLDISABLECLIENTSTATEPROC glad_glDisableClientState = NULL;
@@ -221,6 +224,7 @@ PFNGLGETQUERYOBJECTUIVPROC glad_glGetQueryObjectuiv = NULL;
 PFNGLGETQUERYIVPROC glad_glGetQueryiv = NULL;
 PFNGLGETRENDERBUFFERPARAMETERIVPROC glad_glGetRenderbufferParameteriv = NULL;
 PFNGLGETSHADERINFOLOGPROC glad_glGetShaderInfoLog = NULL;
+PFNGLGETSHADERPRECISIONFORMATPROC glad_glGetShaderPrecisionFormat = NULL;
 PFNGLGETSHADERSOURCEPROC glad_glGetShaderSource = NULL;
 PFNGLGETSHADERIVPROC glad_glGetShaderiv = NULL;
 PFNGLGETSTRINGPROC glad_glGetString = NULL;
@@ -409,6 +413,7 @@ PFNGLRECTIPROC glad_glRecti = NULL;
 PFNGLRECTIVPROC glad_glRectiv = NULL;
 PFNGLRECTSPROC glad_glRects = NULL;
 PFNGLRECTSVPROC glad_glRectsv = NULL;
+PFNGLRELEASESHADERCOMPILERPROC glad_glReleaseShaderCompiler = NULL;
 PFNGLRENDERMODEPROC glad_glRenderMode = NULL;
 PFNGLRENDERBUFFERSTORAGEPROC glad_glRenderbufferStorage = NULL;
 PFNGLRENDERBUFFERSTORAGEMULTISAMPLEPROC glad_glRenderbufferStorageMultisample = NULL;
@@ -437,6 +442,7 @@ PFNGLSECONDARYCOLOR3USVPROC glad_glSecondaryColor3usv = NULL;
 PFNGLSECONDARYCOLORPOINTERPROC glad_glSecondaryColorPointer = NULL;
 PFNGLSELECTBUFFERPROC glad_glSelectBuffer = NULL;
 PFNGLSHADEMODELPROC glad_glShadeModel = NULL;
+PFNGLSHADERBINARYPROC glad_glShaderBinary = NULL;
 PFNGLSHADERSOURCEPROC glad_glShaderSource = NULL;
 PFNGLSTENCILFUNCPROC glad_glStencilFunc = NULL;
 PFNGLSTENCILFUNCSEPARATEPROC glad_glStencilFuncSeparate = NULL;
@@ -1183,6 +1189,14 @@ static void glad_gl_load_GL_VERSION_2_1( GLADuserptrloadfunc load, void* userptr
     glad_glUniformMatrix4x2fv = (PFNGLUNIFORMMATRIX4X2FVPROC) load(userptr, "glUniformMatrix4x2fv");
     glad_glUniformMatrix4x3fv = (PFNGLUNIFORMMATRIX4X3FVPROC) load(userptr, "glUniformMatrix4x3fv");
 }
+static void glad_gl_load_GL_ARB_ES2_compatibility( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_GL_ARB_ES2_compatibility) return;
+    glad_glClearDepthf = (PFNGLCLEARDEPTHFPROC) load(userptr, "glClearDepthf");
+    glad_glDepthRangef = (PFNGLDEPTHRANGEFPROC) load(userptr, "glDepthRangef");
+    glad_glGetShaderPrecisionFormat = (PFNGLGETSHADERPRECISIONFORMATPROC) load(userptr, "glGetShaderPrecisionFormat");
+    glad_glReleaseShaderCompiler = (PFNGLRELEASESHADERCOMPILERPROC) load(userptr, "glReleaseShaderCompiler");
+    glad_glShaderBinary = (PFNGLSHADERBINARYPROC) load(userptr, "glShaderBinary");
+}
 static void glad_gl_load_GL_ARB_framebuffer_object( GLADuserptrloadfunc load, void* userptr) {
     if(!GLAD_GL_ARB_framebuffer_object) return;
     glad_glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC) load(userptr, "glBindFramebuffer");
@@ -1301,6 +1315,7 @@ static int glad_gl_find_extensions_gl(void) {
     char **exts_i = NULL;
     if (!glad_gl_get_extensions(&exts, &exts_i)) return 0;
 
+    GLAD_GL_ARB_ES2_compatibility = glad_gl_has_extension(exts, exts_i, "GL_ARB_ES2_compatibility");
     GLAD_GL_ARB_framebuffer_object = glad_gl_has_extension(exts, exts_i, "GL_ARB_framebuffer_object");
 
     glad_gl_free_extensions(exts_i);
@@ -1361,6 +1376,7 @@ int gladLoadGLUserPtr( GLADuserptrloadfunc load, void *userptr) {
     glad_gl_load_GL_VERSION_2_1(load, userptr);
 
     if (!glad_gl_find_extensions_gl()) return 0;
+    glad_gl_load_GL_ARB_ES2_compatibility(load, userptr);
     glad_gl_load_GL_ARB_framebuffer_object(load, userptr);
 
 
