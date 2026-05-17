@@ -24,6 +24,8 @@ extern "C" {
 
 
 int GLAD_GL_ES_VERSION_2_0 = 0;
+int GLAD_GL_EXT_discard_framebuffer = 0;
+int GLAD_GL_OES_compressed_ETC1_RGB8_texture = 0;
 
 
 
@@ -67,6 +69,7 @@ PFNGLDEPTHRANGEFPROC glad_glDepthRangef = NULL;
 PFNGLDETACHSHADERPROC glad_glDetachShader = NULL;
 PFNGLDISABLEPROC glad_glDisable = NULL;
 PFNGLDISABLEVERTEXATTRIBARRAYPROC glad_glDisableVertexAttribArray = NULL;
+PFNGLDISCARDFRAMEBUFFEREXTPROC glad_glDiscardFramebufferEXT = NULL;
 PFNGLDRAWARRAYSPROC glad_glDrawArrays = NULL;
 PFNGLDRAWELEMENTSPROC glad_glDrawElements = NULL;
 PFNGLENABLEPROC glad_glEnable = NULL;
@@ -316,6 +319,10 @@ static void glad_gl_load_GL_ES_VERSION_2_0( GLADuserptrloadfunc load, void* user
     glad_glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC) load(userptr, "glVertexAttribPointer");
     glad_glViewport = (PFNGLVIEWPORTPROC) load(userptr, "glViewport");
 }
+static void glad_gl_load_GL_EXT_discard_framebuffer( GLADuserptrloadfunc load, void* userptr) {
+    if(!GLAD_GL_EXT_discard_framebuffer) return;
+    glad_glDiscardFramebufferEXT = (PFNGLDISCARDFRAMEBUFFEREXTPROC) load(userptr, "glDiscardFramebufferEXT");
+}
 
 
 
@@ -411,7 +418,8 @@ static int glad_gl_find_extensions_gles2(void) {
     char **exts_i = NULL;
     if (!glad_gl_get_extensions(&exts, &exts_i)) return 0;
 
-    GLAD_UNUSED(&glad_gl_has_extension);
+    GLAD_GL_EXT_discard_framebuffer = glad_gl_has_extension(exts, exts_i, "GL_EXT_discard_framebuffer");
+    GLAD_GL_OES_compressed_ETC1_RGB8_texture = glad_gl_has_extension(exts, exts_i, "GL_OES_compressed_ETC1_RGB8_texture");
 
     glad_gl_free_extensions(exts_i);
 
@@ -457,6 +465,7 @@ int gladLoadGLES2UserPtr( GLADuserptrloadfunc load, void *userptr) {
     glad_gl_load_GL_ES_VERSION_2_0(load, userptr);
 
     if (!glad_gl_find_extensions_gles2()) return 0;
+    glad_gl_load_GL_EXT_discard_framebuffer(load, userptr);
 
 
 
